@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { useAuth0 } from '@auth0/auth0-react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -44,8 +45,13 @@ const FirebaseLogin = ({ ...others }) => {
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const customization = useSelector((state) => state.customization);
     const [checked, setChecked] = useState(true);
+    const { loginWithRedirect } = useAuth0();
+    const { user } = useAuth0();
+
+    console.log('usuario Auth0:', user);
 
     const googleHandler = async () => {
+        loginWithRedirect();
         console.error('Login');
     };
 
@@ -68,6 +74,7 @@ const FirebaseLogin = ({ ...others }) => {
                             fullWidth
                             onClick={googleHandler}
                             size="large"
+                            label="logueate pa"
                             variant="outlined"
                             sx={{
                                 color: 'grey.700',
@@ -131,11 +138,11 @@ const FirebaseLogin = ({ ...others }) => {
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     console.log('values,', values);
+                    console.log(setSubmitting);
                     await axios
                         .post('http://localhost:3000/api/v1/auth/singin', { email: 'user@demo.com', password: 'Asd123' }, {})
                         .then((response) => {
                             localStorage.setItem('token', response.data.token);
-                            console.log('response', response);
                         });
                 }}
             >
